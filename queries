@@ -1,0 +1,18 @@
+1)
+DELETE p2
+FROM Person p1 JOIN Person p2
+ON p1.Email = p2.Email
+AND p1.Id < p2.Id
+
+2)
+WITH temp_table as (
+    SELECT
+        id,
+        email,
+        row_number() over(PARTITION BY email ORDER BY id ASC) as r_num
+    FROM person
+)
+
+DELETE FROM person WHERE id in(
+    SELECT id FROM temp_table WHERE r_num <> 1
+    )
